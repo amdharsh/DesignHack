@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Hackathon 2026 — Create. Design. Remember.</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #0a0709;
+    --bg2:       #100c0e;
+    --bg3:       #160f12;
+    --surface:   #1e1518;
+    --surface2:  #261b1f;
+    --border:    rgba(220,160,180,0.12);
+    --border2:   rgba(220,160,180,0.22);
+    --gold:      #c9a96e;
+    --gold-dim:  rgba(201,169,110,0.12);
+    --rose:      #c4687a;
+    --rose-dim:  rgba(196,104,122,0.13);
+    --lavender:  #9b8ec4;
+    --lav-dim:   rgba(155,142,196,0.13);
+    --accent:    #d4a0b0;
+    --text:      #ede0e5;
+    --text-mid:  #a08090;
+    --text-dim:  #5a4050;
+  }
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); overflow-x:hidden; }
+
+  /* ── NAV ── */
+  nav {
+    position:fixed; top:0; left:0; right:0; z-index:200;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:1.1rem 5vw;
+    background:rgba(10,7,9,0.75);
+    backdrop-filter:blur(20px) saturate(180%);
+    border-bottom:1px solid var(--border);
+    transition:all 0.4s;
+  }
+  nav.scrolled { background:rgba(10,7,9,0.95); }
+
+  .nav-logo {
+    font-family:'Cormorant Garamond',serif;
+    font-size:1.35rem; font-weight:600; color:var(--gold);
+    letter-spacing:0.04em; display:flex; align-items:center; gap:0.45rem;
+  }
+  .nav-star { display:inline-block; animation:spinStar 14s linear infinite; }
+  @keyframes spinStar { to { transform:rotate(360deg); } }
+
+  .nav-links { display:flex; gap:2rem; list-style:none; }
+  .nav-links a {
+    text-decoration:none; color:var(--text-mid);
+    font-size:0.78rem; letter-spacing:0.1em; text-transform:uppercase;
+    transition:color 0.2s; position:relative;
+  }
+  .nav-links a::after {
+    content:''; position:absolute; bottom:-4px; left:0; right:0; height:1px;
+    background:var(--gold); transform:scaleX(0); transform-origin:left; transition:transform 0.3s;
+  }
+  .nav-links a:hover { color:var(--text); }
+  .nav-links a:hover::after { transform:scaleX(1); }
+  .nav-reg {
+    border:1px solid var(--gold); color:var(--gold) !important;
+    padding:0.48rem 1.3rem; border-radius:100px; transition:all 0.25s !important;
+  }
+  .nav-reg::after { display:none !important; }
+  .nav-reg:hover { background:var(--gold) !important; color:var(--bg) !important; }
+
+  /* ── HERO ── */
+  #home {
+    min-height:100vh; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center;
+    padding:120px 5vw 80px; position:relative; overflow:hidden;
+  }
+
+  .hero-grid {
+    position:absolute; inset:0; pointer-events:none;
+    background-image:
+      linear-gradient(rgba(201,169,110,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201,169,110,0.04) 1px, transparent 1px);
+    background-size:60px 60px;
+    animation:gridPan 24s linear infinite;
+  }
+  @keyframes gridPan { to { background-position:60px 60px; } }
+
+  .orb {
+    position:absolute; border-radius:50%; pointer-events:none;
+    mix-blend-mode:screen; filter:blur(90px);
+  }
+  .orb-1 { width:600px; height:600px; background:rgba(196,104,122,0.2); top:-150px; right:-150px; animation:o1 14s ease-in-out infinite; }
+  .orb-2 { width:500px; height:500px; background:rgba(155,142,196,0.15); bottom:-100px; left:-100px; animation:o2 18s ease-in-out infinite; }
+  .orb-3 { width:280px; height:280px; background:rgba(201,169,110,0.13); top:42%; left:18%; animation:o3 11s ease-in-out infinite; }
+  @keyframes o1 { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(-40px,60px) scale(1.08)} 66%{transform:translate(30px,-30px) scale(0.95)} }
+  @keyframes o2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(50px,-40px)} }
+  @keyframes o3 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-20px,30px) scale(1.1)} }
+
+  #particles { position:absolute; inset:0; pointer-events:none; }
+  .particle {
+    position:absolute; border-radius:50%; opacity:0;
+    animation:pfloat var(--dur,8s) var(--delay,0s) ease-in-out infinite;
+  }
+  @keyframes pfloat {
+    0%   { opacity:0; transform:translateY(0) scale(0.2); }
+    15%  { opacity:0.7; }
+    85%  { opacity:0.15; }
+    100% { opacity:0; transform:translateY(-130px) scale(1); }
+  }
+
+  .hero-eyebrow {
+    font-size:0.68rem; letter-spacing:0.28em; text-transform:uppercase; color:var(--gold);
+    animation:fadeUp 1s 0.1s both; display:flex; align-items:center; gap:0.8rem; justify-content:center;
+    margin-bottom:1.6rem;
+  }
+  .eline { flex:1; max-width:55px; height:1px; }
+  .eline-l { background:linear-gradient(to right, transparent, var(--gold)); }
+  .eline-r { background:linear-gradient(to left, transparent, var(--gold)); }
+
+  .hero-title {
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(4rem,9vw,8.5rem);
+    font-weight:300; line-height:0.93; color:var(--text);
+    position:relative; z-index:1;
+  }
+  .hero-title span { display:block; }
+  .t-italic { font-style:italic; color:var(--rose); position:relative; }
+  .t-italic::after {
+    content:''; position:absolute; bottom:-3px; left:0; right:0; height:1px;
+    background:linear-gradient(to right, var(--rose), transparent);
+    animation:lineGrow 1s 1.2s both;
+  }
+  @keyframes lineGrow { from{transform:scaleX(0);transform-origin:left} to{transform:scaleX(1)} }
+  .t-gold { color:var(--gold); }
+
+  .hero-tagline {
+    font-family:'Cormorant Garamond',serif; font-size:clamp(1rem,2vw,1.3rem);
+    font-weight:300; font-style:italic; color:var(--text-mid);
+    margin-top:1.4rem; animation:fadeUp 1s 0.48s both; letter-spacing:0.06em;
+  }
+  .hero-desc {
+    font-size:0.87rem; color:var(--text-dim); line-height:1.85;
+    max-width:450px; margin:0.8rem auto 0; animation:fadeUp 1s 0.64s both;
+  }
+  .hero-cta {
+    margin-top:2.8rem; display:flex; gap:1rem; justify-content:center;
+    animation:fadeUp 1s 0.8s both;
+  }
+
+  .btn-primary {
+    background:var(--gold); color:var(--bg);
+    padding:0.9rem 2.4rem; border-radius:100px;
+    text-decoration:none; font-size:0.8rem; font-weight:600;
+    letter-spacing:0.09em; text-transform:uppercase;
+    transition:all 0.3s; position:relative; overflow:hidden;
+  }
+  .btn-primary::before {
+    content:''; position:absolute; inset:0;
+    background:rgba(255,255,255,0.22);
+    transform:translateX(-100%) skewX(-15deg);
+    transition:transform 0.5s;
+  }
+  .btn-primary:hover::before { transform:translateX(100%) skewX(-15deg); }
+  .btn-primary:hover { transform:translateY(-2px); box-shadow:0 14px 40px rgba(201,169,110,0.35); }
+
+  .btn-ghost {
+    background:transparent; color:var(--text-mid);
+    padding:0.9rem 2.4rem; border-radius:100px;
+    text-decoration:none; font-size:0.8rem; font-weight:500;
+    letter-spacing:0.09em; text-transform:uppercase;
+    border:1px solid var(--border2); transition:all 0.3s;
+  }
+  .btn-ghost:hover { color:var(--text); border-color:rgba(220,160,180,0.4); background:var(--surface); }
+
+  .hero-scroll {
+    position:absolute; bottom:2rem; left:50%; transform:translateX(-50%);
+    display:flex; flex-direction:column; align-items:center; gap:0.5rem;
+    animation:fadeUp 1s 1.4s both;
+  }
+  .scroll-label { font-size:0.58rem; letter-spacing:0.24em; text-transform:uppercase; color:var(--text-dim); }
+  .scroll-track { width:1px; height:46px; position:relative; overflow:hidden; background:rgba(90,64,80,0.4); }
+  .scroll-track::after {
+    content:''; position:absolute; top:0; left:0; right:0; height:35%;
+    background:var(--gold); animation:scrollDrop 2s ease-in-out infinite;
+  }
+  @keyframes scrollDrop { 0%{top:-35%} 100%{top:130%} }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+
+  /* ── SHARED ── */
+  section { padding:110px 5vw; position:relative; z-index:1; }
+
+  .ey {
+    font-size:0.67rem; letter-spacing:0.24em; text-transform:uppercase; color:var(--gold);
+    display:flex; align-items:center; gap:0.7rem; margin-bottom:0.9rem;
+  }
+  .ey::before { content:''; display:inline-block; width:22px; height:1px; background:var(--gold); }
+
+  .sec-title {
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(2.4rem,4.5vw,3.8rem); font-weight:300; line-height:1.1; color:var(--text);
+  }
+  .sec-title em { font-style:italic; color:var(--rose); }
+  .sec-title .g { color:var(--gold); }
+
+  .div { width:44px; height:1px; background:linear-gradient(to right, var(--rose), transparent); margin:1.4rem 0 2rem; }
+
+  .btext { font-size:0.88rem; line-height:1.85; color:var(--text-mid); max-width:580px; }
+
+  .r { opacity:0; transform:translateY(32px); transition:opacity 0.75s ease, transform 0.75s ease; }
+  .r.in { opacity:1; transform:translateY(0); }
+  .d1 { transition-delay:0.1s; } .d2 { transition-delay:0.2s; } .d3 { transition-delay:0.3s; }
+
+  /* ── ABOUT ── */
+  #about { background:var(--bg2); border-top:1px solid var(--border); }
+  .about-wrap { display:grid; grid-template-columns:1fr 1fr; gap:6vw; align-items:center; max-width:1100px; margin:0 auto; }
+
+  .av { position:relative; height:440px; }
+  .av-card {
+    position:absolute; border-radius:18px; overflow:hidden;
+    border:1px solid var(--border2); display:flex; align-items:center; justify-content:center;
+    font-size:3.2rem; transition:transform 0.4s;
+  }
+  .av-card:hover { transform:scale(1.02); }
+  .av-1 {
+    width:62%; height:68%; top:0; left:0;
+    background:var(--surface);
+    /* animated gradient border */
+    position:absolute;
+  }
+  .av-1-wrap {
+    position:absolute; top:0; left:0; width:62%; height:68%;
+    padding:1.5px; border-radius:18px;
+    background:conic-gradient(from 0deg, var(--rose), var(--gold), var(--lavender), var(--rose));
+    animation:rotateConic 5s linear infinite;
+  }
+  @keyframes rotateConic { to { --angle:360deg; } }
+  .av-1-inner {
+    width:100%; height:100%; border-radius:17px;
+    background:linear-gradient(135deg,var(--surface),var(--surface2));
+    display:flex; align-items:center; justify-content:center; font-size:3.2rem;
+  }
+  .av-2 { width:50%; height:52%; bottom:0; right:0; background:linear-gradient(135deg,#160d14,#1e1025); }
+  .av-badge {
+    position:absolute; top:48%; left:52%; transform:translateY(-50%);
+    background:var(--bg); border:1px solid var(--border2);
+    padding:0.65rem 1rem; border-radius:10px;
+    font-size:0.7rem; font-weight:500; color:var(--gold);
+    white-space:nowrap; letter-spacing:0.06em;
+  }
+
+  .tags { display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:1.6rem; }
+  .tag {
+    padding:0.36rem 0.95rem; border-radius:100px;
+    background:var(--surface); border:1px solid var(--border2);
+    color:var(--text-mid); font-size:0.72rem; letter-spacing:0.04em;
+    transition:all 0.25s; cursor:default;
+  }
+  .tag:hover { border-color:var(--rose); color:var(--rose); background:var(--rose-dim); }
+
+  /* ── DETAILS ── */
+  #details { background:var(--bg3); border-top:1px solid var(--border); }
+  .det-inner { max-width:1100px; margin:0 auto; }
+  .det-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1.2rem; }
+  .d-card {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:16px; padding:1.7rem 1.5rem;
+    position:relative; overflow:hidden; transition:all 0.3s; cursor:default;
+  }
+  .d-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:2px;
+    background:linear-gradient(to right, var(--rose), var(--lavender));
+    transform:scaleX(0); transform-origin:left; transition:transform 0.4s;
+  }
+  .d-card:hover { border-color:var(--border2); transform:translateY(-4px); background:var(--surface2); }
+  .d-card:hover::before { transform:scaleX(1); }
+  .d-icon { font-size:1.4rem; margin-bottom:0.9rem; }
+  .d-label { font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--text-dim); margin-bottom:0.3rem; }
+  .d-val { font-family:'Cormorant Garamond',serif; font-size:1.35rem; font-weight:600; color:var(--text); }
+  .d-sub { font-size:0.74rem; color:var(--text-dim); margin-top:0.2rem; }
+
+  /* ── REGISTER ── */
+  #register {
+    background:var(--bg2); border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+    text-align:center; padding:130px 5vw; position:relative; overflow:hidden;
+  }
+  .reg-rings { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); pointer-events:none; }
+  .ring { position:absolute; border-radius:50%; border:1px solid; transform:translate(-50%,-50%); opacity:0; animation:ringExp 4s ease-out infinite; }
+  .ring-1 { width:280px; height:280px; border-color:rgba(201,169,110,0.22); animation-delay:0s; }
+  .ring-2 { width:480px; height:480px; border-color:rgba(196,104,122,0.16); animation-delay:1.2s; }
+  .ring-3 { width:680px; height:680px; border-color:rgba(155,142,196,0.1); animation-delay:2.4s; }
+  @keyframes ringExp { 0%{opacity:0;transform:translate(-50%,-50%) scale(0.4)} 40%{opacity:1} 100%{opacity:0;transform:translate(-50%,-50%) scale(1.3)} }
+
+  #register .sec-title { max-width:600px; margin:0 auto; }
+  #register .btext { text-align:center; margin:1.5rem auto 2.5rem; }
+
+  /* ── TIMELINE ── */
+  #timeline { background:var(--bg); border-top:1px solid var(--border); }
+  .tl-inner { max-width:700px; margin:0 auto; }
+  .tl-wrap { position:relative; padding-left:58px; margin-top:2.5rem; }
+  .tl-wrap::before {
+    content:''; position:absolute; left:19px; top:0; bottom:0; width:1px;
+    background:linear-gradient(to bottom, var(--rose), var(--lavender), transparent);
+  }
+  .tl-item {
+    position:relative; margin-bottom:2.4rem;
+    opacity:0; transform:translateX(-18px); transition:all 0.6s ease;
+  }
+  .tl-item.in { opacity:1; transform:translateX(0); }
+  .tl-dot {
+    position:absolute; left:-46px; top:2px; width:36px; height:36px; border-radius:50%;
+    background:var(--surface); border:1px solid var(--border2);
+    display:flex; align-items:center; justify-content:center; font-size:0.95rem;
+    transition:all 0.3s; z-index:1;
+  }
+  .tl-item:hover .tl-dot { background:var(--rose-dim); border-color:var(--rose); }
+  .tl-step { font-size:0.6rem; letter-spacing:0.22em; text-transform:uppercase; color:var(--gold); margin-bottom:0.18rem; }
+  .tl-name { font-family:'Cormorant Garamond',serif; font-size:1.2rem; font-weight:600; color:var(--text); }
+  .tl-date { font-size:0.76rem; color:var(--text-dim); margin-top:0.2rem; }
+
+  /* ── JUDGES ── */
+  #judges { background:var(--bg2); border-top:1px solid var(--border); }
+  .j-inner { max-width:1100px; margin:0 auto; }
+  .j-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(255px,1fr)); gap:1.4rem; }
+  .j-card {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:22px; padding:2rem; text-align:center;
+    transition:all 0.35s; position:relative; overflow:hidden;
+  }
+  .j-card::after {
+    content:''; position:absolute; inset:0;
+    background:radial-gradient(ellipse at 50% 0%, rgba(201,169,110,0.07), transparent 65%);
+    opacity:0; transition:opacity 0.35s;
+  }
+  .j-card:hover { border-color:var(--border2); transform:translateY(-6px); }
+  .j-card:hover::after { opacity:1; }
+  .j-av {
+    width:86px; height:86px; border-radius:50%;
+    background:var(--surface2); border:1px solid var(--border2);
+    margin:0 auto 1.2rem; position:relative; display:flex; align-items:center; justify-content:center;
+  }
+  .j-av-face { font-size:2rem; position:relative; z-index:1; }
+  .j-card:hover .j-av::before {
+    content:''; position:absolute; inset:-3px; border-radius:50%;
+    background:conic-gradient(var(--gold), var(--rose), var(--lavender), var(--gold));
+    animation:spinCon 2s linear infinite; z-index:0;
+  }
+  .j-card:hover .j-av::after {
+    content:''; position:absolute; inset:0; border-radius:50%;
+    background:var(--surface2); z-index:0;
+  }
+  @keyframes spinCon { to { transform:rotate(360deg); } }
+  .j-name { font-family:'Cormorant Garamond',serif; font-size:1.18rem; font-weight:600; color:var(--text); margin-bottom:0.2rem; }
+  .j-role { font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); margin-bottom:0.18rem; }
+  .j-org { font-size:0.76rem; color:var(--text-dim); margin-bottom:0.8rem; }
+  .j-bio { font-size:0.78rem; color:var(--text-mid); line-height:1.75; }
+  .j-soon { text-align:center; margin-top:2rem; }
+  .j-soon p { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:0.95rem; color:var(--text-dim); }
+
+  /* ── FAQ ── */
+  #faq { background:var(--bg3); border-top:1px solid var(--border); }
+  .faq-inner { max-width:780px; margin:0 auto; }
+  .faq-item { border-bottom:1px solid var(--border); }
+  .faq-q {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:1.35rem 0; cursor:pointer;
+    font-size:0.9rem; font-weight:500; color:var(--text);
+    gap:1rem; user-select:none; transition:color 0.2s;
+  }
+  .faq-q:hover { color:var(--gold); }
+  .faq-tog {
+    width:28px; height:28px; border-radius:50%;
+    background:var(--surface); border:1px solid var(--border2);
+    display:flex; align-items:center; justify-content:center;
+    font-size:1rem; color:var(--text-mid); flex-shrink:0; transition:all 0.3s;
+  }
+  .faq-item.open .faq-tog { background:var(--rose-dim); border-color:var(--rose); color:var(--rose); transform:rotate(45deg); }
+  .faq-a {
+    max-height:0; overflow:hidden;
+    font-size:0.86rem; color:var(--text-mid); line-height:1.85;
+    transition:max-height 0.4s ease, padding 0.3s;
+  }
+  .faq-item.open .faq-a { max-height:200px; padding-bottom:1.2rem; }
+
+  /* ── FOOTER ── */
+  footer { background:#060405; border-top:1px solid var(--border); padding:70px 5vw 30px; }
+  .foot-grid {
+    display:grid; grid-template-columns:1.6fr 1fr 1fr 1fr;
+    gap:3rem; max-width:1100px; margin:0 auto 3rem;
+  }
+  .foot-logo { font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:600; color:var(--gold); letter-spacing:0.04em; display:block; margin-bottom:0.8rem; }
+  .foot-brand p { font-size:0.8rem; line-height:1.8; color:var(--text-dim); max-width:255px; }
+  .foot-h { font-size:0.62rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--text-dim); margin-bottom:1rem; }
+  .foot-links { list-style:none; display:flex; flex-direction:column; gap:0.6rem; }
+  .foot-links a { text-decoration:none; color:var(--text-mid); font-size:0.8rem; transition:color 0.2s; }
+  .foot-links a:hover { color:var(--gold); }
+  .socials { display:flex; gap:0.65rem; margin-top:1.2rem; }
+  .soc {
+    width:33px; height:33px; border-radius:50%;
+    border:1px solid var(--border2); display:flex; align-items:center; justify-content:center;
+    font-size:0.78rem; color:var(--text-mid); text-decoration:none; transition:all 0.2s;
+  }
+  .soc:hover { border-color:var(--gold); color:var(--gold); background:var(--gold-dim); }
+  .foot-bottom {
+    border-top:1px solid var(--border); padding-top:1.4rem;
+    max-width:1100px; margin:0 auto;
+    display:flex; justify-content:space-between; align-items:center;
+    font-size:0.71rem; color:var(--text-dim);
+  }
+  .foot-cta {
+    color:var(--gold); border:1px solid rgba(201,169,110,0.35);
+    padding:0.43rem 1.05rem; border-radius:100px;
+    text-decoration:none; font-size:0.71rem; font-weight:500; transition:all 0.2s;
+  }
+  .foot-cta:hover { background:var(--gold-dim); }
+
+  /* ── CURSOR GLOW ── */
+  #cglow {
+    position:fixed; width:280px; height:280px; border-radius:50%;
+    pointer-events:none;
+    background:radial-gradient(circle, rgba(201,169,110,0.055), transparent 70%);
+    transform:translate(-50%,-50%); z-index:50; transition:opacity 0.3s;
+  }
+
+  /* ── ADDED ANIMATIONS ── */
+
+  /* 1. Floating second visual card */
+  .av-card.av-2 {
+    animation: floatCard 6s ease-in-out infinite;
+  }
+  @keyframes floatCard {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-10px); }
+  }
+
+  /* 2. Badge gentle pulse */
+  .av-badge {
+    animation: badgePulse 3.5s ease-in-out infinite;
+  }
+  @keyframes badgePulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(201,169,110,0); }
+    50%       { box-shadow: 0 0 0 7px rgba(201,169,110,0.08); }
+  }
+
+  /* 3. Shimmer sweep on section dividers */
+  .div {
+    position: relative;
+    overflow: hidden;
+  }
+  .div::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -60%; width: 40%; height: 100%;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.45), transparent);
+    animation: divShimmer 3.2s ease-in-out infinite;
+  }
+  @keyframes divShimmer {
+    0%   { left: -60%; opacity: 0; }
+    20%  { opacity: 1; }
+    80%  { opacity: 1; }
+    100% { left: 130%; opacity: 0; }
+  }
+
+  /* 4. Timeline dot pop on reveal */
+  .tl-item.in .tl-dot {
+    animation: dotPop 0.45s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+  @keyframes dotPop {
+    from { transform: scale(0.4); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+  }
+
+  /* 5. Hero title words fade+slide in with stagger */
+  .hero-title span {
+    display: block;
+    opacity: 0;
+    animation: wordRise 0.8s cubic-bezier(0.22,1,0.36,1) forwards;
+  }
+  .hero-title span:nth-child(1) { animation-delay: 0.3s; }
+  .hero-title span:nth-child(2) { animation-delay: 0.55s; }
+  .hero-title span:nth-child(3) { animation-delay: 0.8s; }
+  @keyframes wordRise {
+    from { opacity: 0; transform: translateY(22px) skewY(1.5deg); }
+    to   { opacity: 1; transform: translateY(0)    skewY(0deg); }
+  }
+
+  /* 6. Footer logo subtle gold shimmer text */
+  .foot-logo {
+    background: linear-gradient(90deg, var(--gold) 0%, #f0d898 45%, var(--gold) 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: logoShimmer 4s linear infinite;
+  }
+  @keyframes logoShimmer {
+    0%   { background-position: 0% center; }
+    100% { background-position: 200% center; }
+  }
+
+  /* ── NEW ANIMATIONS ── */
+
+  /* 7. Scroll progress bar */
+  #scroll-bar {
+    position: fixed; top: 0; left: 0; height: 2px; width: 0%;
+    background: linear-gradient(to right, var(--rose), var(--gold), var(--lavender));
+    z-index: 9999; transition: width 0.1s linear;
+  }
+
+  /* 8. Nav slides down on load */
+  nav {
+    animation: navSlideIn 0.7s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  @keyframes navSlideIn {
+    from { transform: translateY(-100%); opacity: 0; }
+    to   { transform: translateY(0);     opacity: 1; }
+  }
+
+  /* 9. Typing cursor blink on hero eyebrow */
+  .hero-eyebrow::after {
+    content: '|';
+    color: var(--gold);
+    margin-left: 4px;
+    animation: cursorBlink 1.1s step-end infinite;
+  }
+  @keyframes cursorBlink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+  }
+
+  /* 10. Detail cards: lift + inner glow on hover */
+  .d-card {
+    transition: all 0.35s cubic-bezier(0.22,1,0.36,1);
+  }
+  .d-card::after {
+    content: '';
+    position: absolute; inset: 0; border-radius: 16px;
+    background: radial-gradient(ellipse at 50% 110%, rgba(201,169,110,0.1), transparent 65%);
+    opacity: 0; transition: opacity 0.4s;
+  }
+  .d-card:hover::after { opacity: 1; }
+  .d-icon {
+    display: inline-block;
+    transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .d-card:hover .d-icon { transform: scale(1.35) rotate(-8deg); }
+
+  /* 11. Tag pop on hover */
+  .tag {
+    transition: all 0.22s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .tag:hover { transform: scale(1.08) translateY(-2px); }
+
+  /* 12. Judge card: scale reveal + shimmer on hover */
+  .j-card {
+    transition: all 0.38s cubic-bezier(0.22,1,0.36,1);
+  }
+  .j-card::before {
+    content: '';
+    position: absolute; top: -50%; left: -75%;
+    width: 50%; height: 200%;
+    background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.04) 50%, transparent 60%);
+    transform: skewX(-20deg);
+    transition: left 0.6s ease;
+  }
+  .j-card:hover::before { left: 130%; }
+  .j-card:hover { transform: translateY(-8px) scale(1.02); }
+
+  /* 13. FAQ item: subtle left-border grow on open */
+  .faq-item {
+    position: relative;
+    border-left: 2px solid transparent;
+    padding-left: 0;
+    transition: border-color 0.3s, padding-left 0.3s;
+  }
+  .faq-item.open {
+    border-left-color: var(--rose);
+    padding-left: 0.9rem;
+  }
+  .faq-q { transition: color 0.2s, padding-left 0.3s; }
+
+  /* 14. Register section CTA button heartbeat */
+  #register .btn-primary {
+    animation: heartbeat 2.8s ease-in-out infinite;
+  }
+  @keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    6%        { transform: scale(1.04); }
+    12%       { transform: scale(1); }
+    18%       { transform: scale(1.025); }
+    24%       { transform: scale(1); }
+  }
+
+  /* 15. Social icon orbit on hover */
+  .soc {
+    transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .soc:hover { transform: translateY(-4px) rotate(12deg) scale(1.15); }
+
+  /* 16. Section eyebrow (ey) line grows in when visible */
+  .ey { overflow: hidden; }
+  .ey::before {
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.6s ease 0.3s;
+  }
+  .ey.in::before { transform: scaleX(1); }
+
+  /* 17. Scroll indicator arrow bounce in footer CTA */
+  .foot-cta {
+    transition: all 0.25s;
+    position: relative;
+  }
+  .foot-cta:hover { background: var(--gold-dim); transform: translateY(-2px); }
+
+  /* 18. Tilt effect placeholder — handled in JS */
+
+  /* ── RESPONSIVE ── */
+  @media (max-width:768px) {
+    .nav-links { display:none; }
+    .about-wrap { grid-template-columns:1fr; }
+    .av { height:280px; }
+    .foot-grid { grid-template-columns:1fr 1fr; gap:2rem; }
+  }
+  @media (max-width:480px) {
+    .foot-grid { grid-template-columns:1fr; }
+    .foot-bottom { flex-direction:column; gap:1rem; text-align:center; }
+  }
+</style>
+</head>
+<body>
+
+<div id="scroll-bar"></div>
+<div id="cglow"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <span class="nav-logo"><span class="nav-star">✦</span> DesignHack</span>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#details">Details</a></li>
+    <li><a href="#timeline">Timeline</a></li>
+    <li><a href="#judges">Judges</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#register" class="nav-reg">Register</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="home">
+  <div class="hero-grid"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div id="particles"></div>
+
+  <p class="hero-eyebrow">
+    <span class="eline eline-l"></span>
+    Design Hackathon 2026
+    <span class="eline eline-r"></span>
+  </p>
+
+  <h1 class="hero-title">
+    <span>Create.</span>
+    <span class="t-italic">Design.</span>
+    <span class="t-gold">Remember.</span>
+  </h1>
+
+  <p class="hero-tagline">Where creativity meets craft, and ideas become art.</p>
+  <p class="hero-desc">A design-focused hackathon for visionaries, makers, and storytellers. Build something beautiful, meaningful, and unforgettable.</p>
+
+  <div class="hero-cta">
+    <a href="#register" class="btn-primary">Register Now →</a>
+    <a href="#about" class="btn-ghost">Learn More</a>
+  </div>
+
+  <div class="hero-scroll">
+    <span class="scroll-label">Scroll</span>
+    <div class="scroll-track"></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-wrap">
+    <div class="av r">
+      <div class="av-1-wrap">
+        <div class="av-1-inner">🎨</div>
+      </div>
+      <div class="av-card av-2">✨</div>
+      <div class="av-badge">Design · Create · Present</div>
+    </div>
+    <div>
+      <p class="ey r">About the Event</p>
+      <h2 class="sec-title r">A hackathon built<br>for <em>designers</em></h2>
+      <div class="div r"></div>
+      <p class="btext r">This is a design-focused hackathon where participants create visually appealing, creative, and meaningful design outcomes. Work individually or in teams of up to 3, and present your final concept to expert judges.</p>
+      <p class="btext r" style="margin-top:1rem;">From digital experiences to crafted keepsakes — if it's beautiful and tells a story, it belongs here.</p>
+      <div class="tags r d2">
+        <span class="tag">🌐 Website Design</span>
+        <span class="tag">🎭 Digital Experience</span>
+        <span class="tag">✂️ Craft Design</span>
+        <span class="tag">📷 Memory Keeping</span>
+        <span class="tag">🎁 Keepsake Products</span>
+        <span class="tag">📖 Visual Storytelling</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DETAILS -->
+<section id="details">
+  <div class="det-inner">
+    <div style="margin-bottom:3.5rem;">
+      <p class="ey r">Event Details</p>
+      <h2 class="sec-title r">Everything you<br>need to <em>know</em></h2>
+      <div class="div r"></div>
+    </div>
+    <div class="det-grid">
+      <div class="d-card r"><div class="d-icon">📅</div><div class="d-label">Date</div><div class="d-val">TBA 2026</div><div class="d-sub">Date announced soon</div></div>
+      <div class="d-card r d1"><div class="d-icon">⏰</div><div class="d-label">Time</div><div class="d-val">TBA</div><div class="d-sub">Opening + closing sessions</div></div>
+      <div class="d-card r d2"><div class="d-icon">📍</div><div class="d-label">Location</div><div class="d-val">TBA</div><div class="d-sub">Venue coming soon</div></div>
+      <div class="d-card r d3"><div class="d-icon">🎯</div><div class="d-label">Format</div><div class="d-val">In-Person</div><div class="d-sub">With online options</div></div>
+      <div class="d-card r"><div class="d-icon">👥</div><div class="d-label">Team Size</div><div class="d-val">1 – 3</div><div class="d-sub">Solo or small teams</div></div>
+      <div class="d-card r d1"><div class="d-icon">📝</div><div class="d-label">Registration</div><div class="d-val">Open Now</div><div class="d-sub">Deadline TBA</div></div>
+      <div class="d-card r d2"><div class="d-icon">🎓</div><div class="d-label">Eligibility</div><div class="d-val">Open to All</div><div class="d-sub">Designers, students, creatives</div></div>
+      <div class="d-card r d3"><div class="d-icon">🏆</div><div class="d-label">Prizes</div><div class="d-val">TBA</div><div class="d-sub">Exciting rewards incoming</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- REGISTER -->
+<section id="register">
+  <div class="reg-rings">
+    <div class="ring ring-1"></div>
+    <div class="ring ring-2"></div>
+    <div class="ring ring-3"></div>
+  </div>
+  <div style="position:relative;z-index:1;">
+    <p class="ey r" style="justify-content:center;">Join the Hackathon</p>
+    <h2 class="sec-title r" style="text-align:center;">Ready to create<br><em>something beautiful?</em></h2>
+    <p class="btext r" style="text-align:center;margin:1.5rem auto 2.5rem;">Register now to secure your spot. Spaces are limited — bring your creativity, your team, and your passion for design.</p>
+    <div style="text-align:center;" class="r">
+      <a href="#" class="btn-primary">Register Now — It's Free →</a>
+      <p style="margin-top:1.1rem;font-size:0.71rem;color:var(--text-dim);">Google Form link will be live soon</p>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section id="timeline">
+  <div class="tl-inner">
+    <p class="ey r">Schedule</p>
+    <h2 class="sec-title r">The <em>journey</em><br>unfolds like this</h2>
+    <div class="div r"></div>
+    <div class="tl-wrap">
+      <div class="tl-item"><div class="tl-dot">📋</div><p class="tl-step">Phase 01</p><p class="tl-name">Registration Opens</p><p class="tl-date">TBA — Secure your spot early</p></div>
+      <div class="tl-item"><div class="tl-dot">🎉</div><p class="tl-step">Phase 02</p><p class="tl-name">Opening Session</p><p class="tl-date">TBA — Welcome, briefs, and kickoff</p></div>
+      <div class="tl-item"><div class="tl-dot">🎨</div><p class="tl-step">Phase 03</p><p class="tl-name">Design Time Begins</p><p class="tl-date">TBA — The creativity clock starts ticking</p></div>
+      <div class="tl-item"><div class="tl-dot">💬</div><p class="tl-step">Phase 04</p><p class="tl-name">Check-in & Guidance</p><p class="tl-date">TBA — Mid-way mentoring sessions</p></div>
+      <div class="tl-item"><div class="tl-dot">📤</div><p class="tl-step">Phase 05</p><p class="tl-name">Final Submission</p><p class="tl-date">TBA — Wrap up and submit your work</p></div>
+      <div class="tl-item"><div class="tl-dot">⚖️</div><p class="tl-step">Phase 06</p><p class="tl-name">Judging</p><p class="tl-date">TBA — Presentations and evaluation</p></div>
+      <div class="tl-item"><div class="tl-dot">🏆</div><p class="tl-step">Phase 07</p><p class="tl-name">Winner Announcement</p><p class="tl-date">TBA — Celebration and awards</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- JUDGES -->
+<section id="judges">
+  <div class="j-inner">
+    <div style="text-align:center;margin-bottom:3.5rem;">
+      <p class="ey r" style="justify-content:center;">Featured Guests & Judges</p>
+      <h2 class="sec-title r">The brilliant <span class="g">minds</span><br>behind the panel</h2>
+      <div class="div r" style="margin:1.4rem auto 0;"></div>
+    </div>
+    <div class="j-grid">
+      <div class="j-card r"><div class="j-av"><div class="j-av-face">👤</div></div><p class="j-name">Judge Name</p><p class="j-role">Role / Title</p><p class="j-org">Organization or Work Area</p><p class="j-bio">Short bio or expertise description coming soon.</p></div>
+      <div class="j-card r d1"><div class="j-av"><div class="j-av-face">👤</div></div><p class="j-name">Judge Name</p><p class="j-role">Role / Title</p><p class="j-org">Organization or Work Area</p><p class="j-bio">Short bio or expertise description coming soon.</p></div>
+      <div class="j-card r d2"><div class="j-av"><div class="j-av-face">👤</div></div><p class="j-name">Featured Guest</p><p class="j-role">Role / Title</p><p class="j-org">Organization or Work Area</p><p class="j-bio">Short bio or expertise description coming soon.</p></div>
+    </div>
+    <div class="j-soon r"><p>✦ Judges and featured guests coming soon — stay tuned ✦</p></div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="faq-inner">
+    <p class="ey r">FAQ</p>
+    <h2 class="sec-title r">Questions<br><em>answered</em></h2>
+    <div class="div r"></div>
+    <div class="faq-item r"><div class="faq-q" onclick="faqT(this)"><span>Who can participate?</span><button class="faq-tog">+</button></div><div class="faq-a">Open to all — students, professionals, hobbyists, and anyone with a passion for design and creativity. No prior hackathon experience needed.</div></div>
+    <div class="faq-item r"><div class="faq-q" onclick="faqT(this)"><span>What are the team requirements?</span><button class="faq-tog">+</button></div><div class="faq-a">Participate individually or as a team of up to 3 members. Teams can be formed before or during the event. Cross-disciplinary teams are encouraged!</div></div>
+    <div class="faq-item r"><div class="faq-q" onclick="faqT(this)"><span>How do I register?</span><button class="faq-tog">+</button></div><div class="faq-a">Click "Register Now" anywhere on this page to access our Google Form. Registration details and deadlines will be announced soon. Early registration is recommended as spots are limited.</div></div>
+    <div class="faq-item r"><div class="faq-q" onclick="faqT(this)"><span>What are the submission requirements?</span><button class="faq-tog">+</button></div><div class="faq-a">Submission formats and deadlines will be shared at the opening session. Your final work should showcase your design concept clearly, creatively, and with strong storytelling.</div></div>
+    <div class="faq-item r"><div class="faq-q" onclick="faqT(this)"><span>Will there be guidance or mentoring?</span><button class="faq-tog">+</button></div><div class="faq-a">Yes! There's a dedicated check-in and guidance session mid-hackathon where judges and mentors will offer feedback and direction on your work in progress.</div></div>
+    <div class="faq-item r"><div class="faq-q" onclick="faqT(this)"><span>How will winners be selected?</span><button class="faq-tog">+</button></div><div class="faq-a">Winners are chosen by our judge panel based on creativity, visual appeal, concept strength, storytelling quality, and presentation. Full criteria will be shared at kickoff.</div></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-grid">
+    <div class="foot-brand">
+      <span class="foot-logo">✦ DesignHack 2026</span>
+      <p>A hackathon for designers, dreamers, and storytellers. Create something beautiful. Leave something remembered.</p>
+      <div class="socials">
+        <a href="#" class="soc">𝕏</a>
+        <a href="#" class="soc">in</a>
+        <a href="#" class="soc">◎</a>
+      </div>
+    </div>
+    <div>
+      <p class="foot-h">Quick Links</p>
+      <ul class="foot-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#details">Event Details</a></li>
+        <li><a href="#timeline">Timeline</a></li>
+        <li><a href="#judges">Judges</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="foot-h">Register</p>
+      <ul class="foot-links">
+        <li><a href="#register">Register Now</a></li>
+        <li><a href="#">Google Form (soon)</a></li>
+        <li><a href="#">Team Registration</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="foot-h">Contact</p>
+      <ul class="foot-links">
+        <li><a href="mailto:hello@designhack.com">hello@designhack.com</a></li>
+        <li><a href="#">Instagram</a></li>
+        <li><a href="#">LinkedIn</a></li>
+        <li><a href="#">Twitter / X</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2026 Design Hackathon. All rights reserved.</span>
+    <a href="#register" class="foot-cta">Register Now →</a>
+  </div>
+</footer>
+
+<script>
+  // Cursor glow
+  const cg = document.getElementById('cglow');
+  document.addEventListener('mousemove', e => {
+    cg.style.left = e.clientX + 'px';
+    cg.style.top  = e.clientY + 'px';
+  });
+
+  // Scroll: nav + progress bar + parallax
+  const scrollBar = document.getElementById('scroll-bar');
+  window.addEventListener('scroll', () => {
+    const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+    scrollBar.style.width = pct + '%';
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 50);
+    // Subtle parallax on hero orbs
+    const oy = window.scrollY * 0.25;
+    document.querySelectorAll('.orb').forEach((o, i) => {
+      const factor = [0.15, 0.2, 0.1][i] || 0.15;
+      o.style.transform = `translateY(${window.scrollY * factor}px)`;
+    });
+  });
+
+  // Particles
+  const pz = document.getElementById('particles');
+  for (let i = 0; i < 28; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const s = Math.random() * 4 + 2;
+    p.style.cssText = `width:${s}px;height:${s}px;left:${Math.random()*100}%;bottom:${5+Math.random()*55}%;--dur:${6+Math.random()*9}s;--delay:${Math.random()*7}s;background:${Math.random()>.5?'var(--gold)':'var(--rose)'};`;
+    pz.appendChild(p);
+  }
+
+  // Reveal
+  const ro = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) { setTimeout(() => e.target.classList.add('in'), i * 65); ro.unobserve(e.target); }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.r').forEach(el => ro.observe(el));
+
+  // Timeline reveal
+  const tObs = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) { setTimeout(() => e.target.classList.add('in'), i * 100); tObs.unobserve(e.target); }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.tl-item').forEach(el => tObs.observe(el));
+
+  // Magnetic tilt on detail cards
+  document.querySelectorAll('.d-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width  - 0.5;
+      const y = (e.clientY - r.top)  / r.height - 0.5;
+      card.style.transform = `translateY(-4px) rotateX(${-y * 8}deg) rotateY(${x * 8}deg)`;
+      card.style.transition = 'transform 0.08s ease';
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = '';
+      card.style.transition = 'all 0.35s cubic-bezier(0.22,1,0.36,1)';
+    });
+  });
+
+  // Magnetic tilt on judge cards
+  document.querySelectorAll('.j-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width  - 0.5;
+      const y = (e.clientY - r.top)  / r.height - 0.5;
+      card.style.transform = `translateY(-8px) scale(1.02) rotateX(${-y * 6}deg) rotateY(${x * 6}deg)`;
+      card.style.transition = 'transform 0.08s ease';
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = '';
+      card.style.transition = 'all 0.38s cubic-bezier(0.22,1,0.36,1)';
+    });
+  });
+
+  // Staggered number count-up on detail card values when visible
+  const countObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const valEl = e.target.querySelector('.d-val');
+      if (!valEl) return;
+      const txt = valEl.textContent.trim();
+      // only animate pure numbers
+      if (/^\d+$/.test(txt)) {
+        const target = parseInt(txt);
+        let cur = 0;
+        const step = Math.ceil(target / 30);
+        const iv = setInterval(() => {
+          cur = Math.min(cur + step, target);
+          valEl.textContent = cur;
+          if (cur >= target) clearInterval(iv);
+        }, 40);
+      }
+      countObs.unobserve(e.target);
+    });
+  }, { threshold: 0.6 });
+  document.querySelectorAll('.d-card').forEach(c => countObs.observe(c));
+
+  // Typed text effect on hero eyebrow
+  const eyebrow = document.querySelector('.hero-eyebrow');
+  if (eyebrow) {
+    const original = 'Design Hackathon 2026';
+    eyebrow.childNodes.forEach(n => { if (n.nodeType === 3 && n.textContent.trim()) n.textContent = ''; });
+    const span = document.createElement('span');
+    eyebrow.insertBefore(span, eyebrow.children[1]);
+    let idx = 0;
+    setTimeout(() => {
+      const iv = setInterval(() => {
+        span.textContent = original.slice(0, ++idx);
+        if (idx >= original.length) clearInterval(iv);
+      }, 55);
+    }, 400);
+  }
+
+  // Ripple effect on nav register button click
+  const navReg = document.querySelector('.nav-reg');
+  if (navReg) {
+    navReg.addEventListener('click', function(e) {
+      const r = document.createElement('span');
+      const rect = this.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height) * 2;
+      r.style.cssText = `position:absolute;border-radius:50%;background:rgba(255,255,255,0.3);width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px;transform:scale(0);animation:ripple 0.5s ease-out forwards;pointer-events:none;`;
+      this.style.position = 'relative';
+      this.style.overflow = 'hidden';
+      this.appendChild(r);
+      setTimeout(() => r.remove(), 600);
+    });
+  }
+
+  // Add ripple keyframe dynamically
+  const ks = document.createElement('style');
+  ks.textContent = '@keyframes ripple{to{transform:scale(1);opacity:0;}}';
+  document.head.appendChild(ks);
+
+  // FAQ
+  function faqT(el) {
+    const item = el.closest('.faq-item');
+    const open = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!open) item.classList.add('open');
+  }
+</script>
+</body>
+</html>
